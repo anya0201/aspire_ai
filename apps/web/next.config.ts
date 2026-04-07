@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 import path from "path";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+// ✅ Yahan humne base URL aur API URL dono theek se define kar diye hain
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const API_URL = `${BASE_URL}/api`;
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -17,7 +19,8 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
-      `connect-src 'self' ${API_URL.replace(/\/api$/, "")}${process.env.NODE_ENV === "development" ? " http://localhost:* ws://localhost:*" : ""}`,
+      // CSP mein hum sirf domain (BASE_URL) allow karte hain
+      `connect-src 'self' ${BASE_URL} ${process.env.NODE_ENV === "development" ? " http://localhost:* ws://localhost:*" : ""}`,
       "frame-ancestors 'none'",
     ].join("; "),
   },
@@ -28,9 +31,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname, "..", ".."),
   },
-  // Prevent Next.js from issuing 308 redirects for trailing slashes on /api/* paths.
-  // Without this, POST /api/courses/ gets a 308 before the rewrite runs, and the
-  // redirected request may expose the backend origin, which CSP connect-src blocks.
   skipTrailingSlashRedirect: true,
   async headers() {
     return [
@@ -42,13 +42,8 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      // beforeFiles ensures the API proxy runs before Next.js file matching
-      // and trailing slash normalization, preventing 308 redirect races.
       beforeFiles: [
         {
-          // FastAPI serves chat SSE on `/api/chat/` and responds with an
-          // absolute 307 redirect if the trailing slash is lost. Handle chat
-          // explicitly so the browser stays on the Next.js origin.
           source: "/api/chat",
           destination: `${API_URL}/chat/`,
         },
@@ -57,6 +52,7 @@ const nextConfig: NextConfig = {
           destination: `${API_URL}/chat/`,
         },
         {
+          // ✅ Ab Frontend ka /api/... exact Backend ke /api/... par jayega!
           source: "/api/:path*",
           destination: `${API_URL}/:path*`,
         },
