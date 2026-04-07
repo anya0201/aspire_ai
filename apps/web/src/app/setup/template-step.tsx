@@ -1,11 +1,11 @@
 "use client";
 
-import { GraduationCap, Compass, Clock, Shield, BookOpen, Brain, BarChart3, ListChecks, HelpCircle, Layers, AlertTriangle, Lightbulb, FileText } from "lucide-react";
+import { GraduationCap, Compass, Clock, Shield, BookOpen, Brain, BarChart3, ListChecks, HelpCircle, Layers, AlertTriangle, Lightbulb, FileText ,type LucideIcon } from "lucide-react";
 import { TEMPLATE_LIST, LEARNING_MODE_LIST } from "@/lib/block-system/templates";
 import type { LearningMode } from "@/lib/block-system/types";
 import type { BlockType } from "@/lib/block-system/types";
 
-const BLOCK_ICONS: Partial<Record<BlockType, typeof FileText>> = {
+const BLOCK_ICONS: Record<string, any> = {
   notes: FileText,
   quiz: HelpCircle,
   flashcards: Layers,
@@ -17,6 +17,7 @@ const BLOCK_ICONS: Partial<Record<BlockType, typeof FileText>> = {
   wrong_answers: AlertTriangle,
   forecast: BarChart3,
   agent_insight: Lightbulb,
+  summary: FileText, // Yeh line add ki bas!
 };
 
 const MODE_ICONS: Record<LearningMode, typeof GraduationCap> = {
@@ -131,7 +132,7 @@ export function TemplateStep({
                 {/* Visual block grid preview */}
                 <div className="shrink-0 grid grid-cols-3 gap-0.5 w-[60px]">
                   {blocks.slice(0, 6).map((b, i) => {
-                    const Icon = BLOCK_ICONS[b.type];
+                    const Icon = (BLOCK_ICONS[b.type] || HelpCircle) as any;
                     const w = b.size === "large" ? "col-span-2" : b.size === "full" ? "col-span-3" : "";
                     return (
                       <div
@@ -139,7 +140,7 @@ export function TemplateStep({
                         className={`flex items-center justify-center rounded bg-muted/60 h-4 ${w}`}
                         title={b.type.replace(/_/g, " ")}
                       >
-                        <Icon className="size-2.5 text-muted-foreground" />
+                        {Icon && <Icon className="size-2.5 text-muted-foreground" />}
                       </div>
                     );
                   })}
