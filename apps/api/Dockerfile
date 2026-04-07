@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
     
 COPY requirements.txt requirements-core.txt ./
-RUN pip install --no-cache-dir --prefix=/install -r "${PYTHON_REQUIREMENTS}"
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # ---- Runtime stage ----
 FROM python:3.11-slim
