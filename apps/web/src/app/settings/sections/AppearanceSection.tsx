@@ -13,7 +13,7 @@ export function AppearanceSection() {
 
   function handleLocaleChange(newLocale: Locale): void {
     const message =
-      newLocale === "zh"
+      newLocale === "en"
         ? t("settings.languageChanged.zh")
         : t("settings.languageChanged.en");
     setLocale(newLocale);
@@ -36,10 +36,10 @@ export function AppearanceSection() {
             English
           </Button>
           <Button
-            data-testid="settings-language-zh"
-            variant={locale === "zh" ? "default" : "outline"}
+            data-testid="settings-language-en"
+            variant={locale === "en" ? "default" : "outline"}
             size="sm"
-            onClick={() => handleLocaleChange("zh")}
+            onClick={() => handleLocaleChange("en")}
           >
             中文
           </Button>
