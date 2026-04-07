@@ -52,7 +52,7 @@ function checkAndNotifyStudyReminder(): void {
   let body = `This is your usual study time (${windowLabel}). Open aspire to keep your streak going.`;
   try {
     const locale = localStorage.getItem("aspire_locale") ?? "en";
-    if (locale === "zh") {
+    if (locale === "en") {
       title = "\u8BE5\u5B66\u4E60\u4E86\uFF01";
       body = `\u73B0\u5728\u662F\u4F60\u7684\u5E38\u89C4\u5B66\u4E60\u65F6\u95F4\uFF08${windowLabel}\uFF09\u3002\u6253\u5F00 aspire \u4FDD\u6301\u5B66\u4E60\u8282\u594F\u3002`;
     }
