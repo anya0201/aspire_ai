@@ -38,7 +38,7 @@ def _extract_client_ip(request: Request) -> str:
     return request.client.host if request.client else "unknown"
 
 
-# ── Security Headers ──
+# ── Security Headers (STRICT - For API endpoints) ──
 
 SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
@@ -57,17 +57,35 @@ SECURITY_HEADERS = {
     ),
 }
 
+# ── Relaxed CSP (ONLY for Swagger Docs) ──
+DOCS_CSP = (
+    "default-src 'self'; "
+    "script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; "
+    "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; "
+    "img-src 'self' data: fastapi.tiangolo.com; "
+    "font-src 'self' data:; "
+    "connect-src 'self';"
+)
+
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    """Add security headers to all responses."""
+    """Add security headers to all responses (with exception for docs)."""
 
     async def dispatch(self, request: Request, call_next):
         response: Response = await call_next(request)
+        
         for header, value in SECURITY_HEADERS.items():
-            response.headers[header] = value
+            # Agar user /docs ya /redoc par hai, toh usko relaxed CSP do
+            if header == "Content-Security-Policy" and request.url.path in ["/docs", "/openapi.json", "/redoc"]:
+                response.headers[header] = DOCS_CSP
+            else:
+                # Baaki saari API ke liye strict security laga do
+                response.headers[header] = value
+
         # HSTS only in production
         if not request.url.hostname or request.url.hostname != "localhost":
             response.headers["Strict-Transport-Security"] = f"max-age={HSTS_MAX_AGE}; includeSubDomains"
+            
         return response
 
 
