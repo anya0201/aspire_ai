@@ -5,7 +5,7 @@ import { TEMPLATE_LIST, LEARNING_MODE_LIST } from "@/lib/block-system/templates"
 import type { LearningMode } from "@/lib/block-system/types";
 import type { BlockType } from "@/lib/block-system/types";
 
-const BLOCK_ICONS: Record<BlockType, typeof BookOpen> = {
+const BLOCK_ICONS: Partial<Record<BlockType, typeof FileText>> = {
   notes: FileText,
   quiz: HelpCircle,
   flashcards: Layers,
