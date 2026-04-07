@@ -3,13 +3,13 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /build
 
-ARG PYTHON_REQUIREMENTS=requirements-full.txt
+ARG PYTHON_REQUIREMENTS=requirements.txt
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt ./
+    
+COPY requirements.txt requirements-core.txt ./
 RUN pip install --no-cache-dir --prefix=/install -r "${PYTHON_REQUIREMENTS}"
 
 # ---- Runtime stage ----
