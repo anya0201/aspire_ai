@@ -18,16 +18,11 @@ from services.router_registry import register_routers
 
 
 def _datetime_serializer(dt: datetime) -> str:
-    """Ensure all datetimes are serialized with UTC timezone (ISO 8601).
-
-    SQLite returns naive datetimes; this guarantees RFC 3339 compliance.
-    """
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     return dt.isoformat()
 
 
-# Initialize structured logging (structlog + stdlib integration)
 configure_logging()
 logger = logging.getLogger(__name__)
 
@@ -48,14 +43,12 @@ def _configure_middleware(app: FastAPI) -> None:
         ],
     )
 
-    # Observability middleware (innermost — runs closest to handler)
     from middleware.metrics import MetricsMiddleware
     from middleware.tracing import TracingMiddleware
 
     app.add_middleware(MetricsMiddleware)
     app.add_middleware(TracingMiddleware)
 
-    # Security middleware stack (order matters: outermost runs first)
     from middleware.security import SecurityHeadersMiddleware, RateLimitMiddleware, AuditLogMiddleware
 
     app.add_middleware(AuditLogMiddleware)
@@ -68,7 +61,6 @@ def _configure_middleware(app: FastAPI) -> None:
     )
     app.add_middleware(SecurityHeadersMiddleware)
 
-    # CSRF protection (outermost security layer)
     if settings.environment == "production" or settings.auth_enabled:
         from middleware.csrf import CSRFMiddleware
         app.add_middleware(CSRFMiddleware)
@@ -91,12 +83,10 @@ async def generic_error_handler(_: Request, exc: Exception):
     if is_llm_unavailable_error(exc):
         llm_error = LLMUnavailableError(str(exc))
         return JSONResponse(status_code=llm_error.status, content=llm_error.to_dict())
-    # Catch LLM provider connection errors that weren't caught in handlers
     exc_module = getattr(type(exc), "__module__", "")
     if "openai" in exc_module or "anthropic" in exc_module:
         logger.warning("LLM provider error: %s", exc, exc_info=True)
         return JSONResponse(status_code=503, content={"code": "llm_unavailable", "message": "LLM service temporarily unavailable", "status": 503})
-    # Catch Playwright errors that weren't caught in handlers
     if "playwright" in exc_module:
         logger.warning("Playwright error: %s", exc, exc_info=True)
         return JSONResponse(status_code=502, content={"code": "browser_error", "message": "Browser automation failed", "status": 502})
@@ -133,7 +123,6 @@ def create_app() -> FastAPI:
     _register_exception_handlers(app)
     register_routers(app)
     
-    # --- YAHAN ADD KARO ROUTES ---
     @app.get("/")
     async def root():
         return {"status": "online", "message": "ASPIRE AI API is running"}
@@ -141,7 +130,6 @@ def create_app() -> FastAPI:
     @app.get("/health")
     async def health_check():
         return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
-    # -----------------------------
 
     return app
 
