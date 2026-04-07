@@ -49,7 +49,7 @@ export function CourseSpacesSection({
               </div>
               {hasPending && (
                 <span className="inline-flex w-fit rounded-full px-2.5 py-0.5 text-[11px] font-medium bg-warning-muted text-warning">
-                  {locale === "zh"
+                  {locale === "en"
                     ? `${course.pending_approval_count}${t("dashboard.pendingApprovalsBadge")}`
                     : `${course.pending_approval_count} ${t("dashboard.pendingApprovalsBadge")}`}
                 </span>
