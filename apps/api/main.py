@@ -132,7 +132,17 @@ def create_app() -> FastAPI:
     _configure_middleware(app)
     _register_exception_handlers(app)
     register_routers(app)
-    return app
+    
+    # --- YAHAN ADD KARO ROUTES ---
+    @app.get("/")
+    async def root():
+        return {"status": "online", "message": "ASPIRE AI API is running"}
 
+    @app.get("/health")
+    async def health_check():
+        return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+    # -----------------------------
+
+    return app
 
 app = create_app()
