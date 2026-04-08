@@ -8,12 +8,20 @@ import { toast } from "sonner";
 import { buildAuthHeaders } from "@/lib/auth";
 
 // In the browser, always use relative "/api" so requests go through the
-// Next.js rewrite (same origin, avoids CSP connect-src issues).
-// On the server (SSR), use NEXT_PUBLIC_API_URL to reach the backend directly.
-export const API_BASE =
-  typeof window !== "undefined"
-    ? "/api"
-    : process.env.NEXT_PUBLIC_API_URL || "/api";
+// Next.js rewrite. On the server (SSR), append /api to NEXT_PUBLIC_API_URL 
+// to match the FastAPI backend routes.
+const getApiBase = () => {
+  if (typeof window !== "undefined") return "/api";
+  
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl) {
+    // Agar end mein '/' hai toh hata do, aur '/api' jod do
+    return `${envUrl.replace(/\/$/, '')}/api`;
+  }
+  return "/api";
+};
+
+export const API_BASE = getApiBase();
 
 /** Show a toast for API errors (non-chat requests). */
 function showApiErrorToast(err: ApiError): void {
