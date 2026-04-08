@@ -13,12 +13,8 @@ import { buildAuthHeaders } from "@/lib/auth";
 const getApiBase = () => {
   if (typeof window !== "undefined") return "/api";
   
-  const envUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (envUrl) {
-    // Agar end mein '/' hai toh hata do, aur '/api' jod do
-    return `${envUrl.replace(/\/$/, '')}/api`;
-  }
-  return "/api";
+  // 🔥 HARDCODED FOR SSR - No environment variable needed
+  return "https://aspireai-production.up.railway.app/api";
 };
 
 export const API_BASE = getApiBase();
