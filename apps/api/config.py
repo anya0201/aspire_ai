@@ -55,8 +55,8 @@ class Settings(BaseSettings):
     llm_model_frontier: str = ""
 
     # Authentication
-    auth_enabled: bool = True
-    deployment_mode: str = "multi_user"
+    auth_enabled: bool = False
+    deployment_mode: str = "single_user"
     jwt_secret_key: str = ""
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 30
