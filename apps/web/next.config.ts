@@ -17,9 +17,10 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob:",
+      "img-src * data: blob:",
       "font-src 'self' data:",
-      `connect-src 'self' ${BASE_URL} ${process.env.NODE_ENV === "development" ? " http://localhost:* ws://localhost:*" : ""}`,
+      // 🔥 'connect-src *' allow karta hai browser ko kisi bhi backend se baat karne ke liye
+      "connect-src *", 
       "frame-ancestors 'none'",
     ].join("; "),
   },
