@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 import path from "path";
 
-// ✅ Yahan humne base URL aur API URL dono theek se define kar diye hain
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+// 🔥 HARDCODED API URL - Isse Vercel Env Var ka chakkar khatam
+const BASE_URL = "https://aspireai-production.up.railway.app";
 const API_URL = `${BASE_URL}/api`;
 
 const securityHeaders = [
@@ -19,7 +19,6 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
-      // CSP mein hum sirf domain (BASE_URL) allow karte hain
       `connect-src 'self' ${BASE_URL} ${process.env.NODE_ENV === "development" ? " http://localhost:* ws://localhost:*" : ""}`,
       "frame-ancestors 'none'",
     ].join("; "),
@@ -52,9 +51,8 @@ const nextConfig: NextConfig = {
           destination: `${API_URL}/chat/`,
         },
         {
-          // ✅ Ab Frontend ka /api/... exact Backend ke /api/... par jayega!
           source: "/api/:path*",
-          destination: `${API_URL}/:path*`,
+          destination: `${API_URL}/:path*`, // Ye seedha Railway par bhejega!
         },
       ],
       afterFiles: [],
