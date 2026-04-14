@@ -13,14 +13,14 @@ keywords = ["ai", "education", "learning", "tutor", "local-first"]
 
 dependencies = [
     # Core
-    "fastapi>=0.115.0",
-    "uvicorn[standard]>=0.30.0",
-    "python-multipart>=0.0.9",
+    "fastapi>=0.135.3",
+    "uvicorn[standard]>=0.44.0",
+    "python-multipart>=0.0.26",
     "pydantic>=2.11.0,<3.0.0",
     "pydantic-settings>=2.7.0,<3.0.0",
 
     # Database core (SQLite local mode)
-    "sqlalchemy[asyncio]>=2.0.30",
+    "sqlalchemy[asyncio]>=2.0.49",
     "aiosqlite>=0.20.0",
 
     # LLM (Ollama — zero-config local inference)
@@ -32,24 +32,24 @@ dependencies = [
     "langgraph-checkpoint-sqlite>=2.0.0",
 
     # File parsing
-    "beautifulsoup4>=4.12.0",
+    "beautifulsoup4>=4.14.3",
     "python-pptx>=1.0.0",
-    "python-docx>=1.1.0",
+    "python-docx>=1.2.0",
     "filetype>=1.2.0",
 
     # Utilities
-    "tiktoken>=0.7.0",
+    "tiktoken>=0.12.0",
     "xxhash>=3.4.0",
     "thefuzz>=0.22.0",
-    "tenacity>=9.0.0",
-    "python-dotenv>=1.0.0",
+    "tenacity>=9.1.4",
+    "python-dotenv>=1.2.2",
     "sse-starlette>=2.0.0",
     "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 cloud = [
-    "anthropic>=0.40.0",
+    "anthropic>=0.94.1",
 ]
 full = [
     "aspire[cloud]",
